@@ -86,9 +86,10 @@ export default function Constellation({ active = [], focusCategory = null, onSel
       const cosY = Math.cos(rotY), sinY = Math.sin(rotY), cosX = Math.cos(rotX), sinX = Math.sin(rotX);
 
       // faint orbit rings for depth
-      ctx.strokeStyle = 'rgba(53,64,240,0.07)'; ctx.lineWidth = 1;
+      ctx.strokeStyle = 'rgba(150,130,255,0.35)'; ctx.lineWidth = 1.5; ctx.shadowColor = 'rgba(140,110,255,0.9)'; ctx.shadowBlur = 12;
       for (const k of [1, 0.66]) { ctx.beginPath(); ctx.ellipse(cx, cy, R * k * 1.05, R * k * 1.05 * Math.abs(Math.cos(rotX)) * 0.35 + 6, 0, 0, Math.PI * 2); ctx.stroke(); }
 
+      ctx.shadowBlur = 0;
       const activeList: Node[] = [];
       for (const n of nodesRef.current) {
         const isAct = act.has(n.tool.slug);
@@ -118,7 +119,7 @@ export default function Constellation({ active = [], focusCategory = null, onSel
 
       // hand-off threads between active tools
       if (activeList.length > 1) {
-        ctx.strokeStyle = 'rgba(255,122,46,0.55)'; ctx.lineWidth = 1.5; ctx.setLineDash([3, 5]);
+        ctx.strokeStyle = 'rgba(190,150,255,0.75)'; ctx.lineWidth = 1.5; ctx.setLineDash([3, 5]);
         ctx.beginPath();
         activeList.forEach((n, i) => { const m = activeList[(i + 1) % activeList.length]; ctx.moveTo(n.sx, n.sy); ctx.lineTo(m.sx, m.sy); });
         ctx.stroke(); ctx.setLineDash([]);
@@ -132,12 +133,12 @@ export default function Constellation({ active = [], focusCategory = null, onSel
         const depth = (n.z + 1) / 2;
         ctx.globalAlpha = dim ? 0.14 + depth * 0.12 : 0.35 + depth * 0.65;
         // contact shadow
-        ctx.fillStyle = 'rgba(35,36,58,0.16)';
-        ctx.beginPath(); ctx.ellipse(n.sx + n.sr * 0.25, n.sy + n.sr * 1.05, n.sr * 0.8, n.sr * 0.22, 0, 0, Math.PI * 2); ctx.fill();
+        ctx.shadowColor = n.hue; ctx.shadowBlur = dim ? 0 : n.sr * (0.9 + n.glow);
         // clay sphere
         const g = ctx.createRadialGradient(n.sx - n.sr * 0.38, n.sy - n.sr * 0.42, n.sr * 0.1, n.sx, n.sy, n.sr * 1.05);
         g.addColorStop(0, shade(n.hue, 0.55)); g.addColorStop(0.45, n.hue); g.addColorStop(1, shade(n.hue, -0.35));
         ctx.fillStyle = g; ctx.beginPath(); ctx.arc(n.sx, n.sy, n.sr, 0, Math.PI * 2); ctx.fill();
+        ctx.shadowBlur = 0;
         // specular
         ctx.fillStyle = 'rgba(255,255,255,0.55)';
         ctx.beginPath(); ctx.ellipse(n.sx - n.sr * 0.35, n.sy - n.sr * 0.45, n.sr * 0.28, n.sr * 0.16, -0.6, 0, Math.PI * 2); ctx.fill();
@@ -156,9 +157,9 @@ export default function Constellation({ active = [], focusCategory = null, onSel
         if (n.pull < 0.6) continue;
         const label = n.tool.name; const tw = ctx.measureText(label).width + 14;
         ctx.globalAlpha = n.pull;
-        ctx.fillStyle = 'rgba(244,244,249,0.92)';
+        ctx.fillStyle = 'rgba(16,18,48,0.88)';
         ctx.beginPath(); ctx.roundRect(n.sx - tw / 2, n.sy + n.sr + 6, tw, compact ? 18 : 22, 11); ctx.fill();
-        ctx.fillStyle = '#23243A';
+        ctx.fillStyle = '#EEF0FF';
         ctx.fillText(label, n.sx, n.sy + n.sr + (compact ? 19 : 21));
       }
       ctx.globalAlpha = 1;

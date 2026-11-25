@@ -10,18 +10,18 @@ import { useRoute } from './lib/router';
 import { useLoaded } from './lib/store';
 
 export default function App() {
-  const { parts } = useRoute();
+  const { parts, path, query } = useRoute();
   const loaded = useLoaded();
   if (!loaded) return <div className="boot" aria-busy="true" />;
 
   let page;
   switch (parts[0]) {
-    case 'explore': page = <Explore />; break;
+    case 'explore': page = <Explore key={query.toString()} />; break;
     case 'tools': page = <ToolDetail key={parts[1]} slug={parts[1] || ''} />; break;
     case 'projects': page = parts[1] ? <ProjectDetail key={parts[1]} id={parts[1]} /> : <Projects />; break;
     case 'library': page = <Library />; break;
     case 'settings': page = <Settings />; break;
     default: page = <Discover />;
   }
-  return <Shell>{page}</Shell>;
+  return <Shell><div key={path} className="route">{page}</div></Shell>;
 }

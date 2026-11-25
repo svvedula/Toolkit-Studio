@@ -2,7 +2,7 @@ import { useCallback, useMemo, useState } from 'react';
 import Constellation from '../components/Constellation';
 import { AccessBadge, Icon, Orb } from '../components/ui';
 import { CATEGORIES, TOOLS, categoryById, type AccessTier, type SkillTier, type Tool } from '../data/catalog';
-import { navigate } from '../lib/router';
+import { navigate, useRoute } from '../lib/router';
 import { isSaved, toggleSaved, useStore } from '../lib/store';
 
 const ACCESS: AccessTier[] = ['Free', 'Freemium', 'Paid', 'Open source'];
@@ -10,8 +10,9 @@ const SKILL: SkillTier[] = ['Beginner', 'Intermediate', 'Advanced'];
 
 export default function Explore() {
   const data = useStore(d => d);
-  const [q, setQ] = useState('');
-  const [cat, setCat] = useState<string | null>(null);
+  const { query } = useRoute();
+  const [q, setQ] = useState(query.get('q') || '');
+  const [cat, setCat] = useState<string | null>(query.get('cat'));
   const [access, setAccess] = useState<AccessTier[]>([]);
   const [skill, setSkill] = useState<SkillTier[]>([]);
 

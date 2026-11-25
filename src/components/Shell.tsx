@@ -2,6 +2,7 @@ import type { ReactNode } from 'react';
 import { navigate, useRoute } from '../lib/router';
 import { Icon } from './ui';
 import { useStore } from '../lib/store';
+import Ambient from './Ambient';
 
 const NAV = [
   { to: '/discover', label: 'Discover', icon: 'discover' },
@@ -18,6 +19,7 @@ export default function Shell({ children }: { children: ReactNode }) {
 
   return (
     <div className="shell">
+      <Ambient />
       <nav className="rail" aria-label="Main">
         <div className="brand" onClick={() => navigate('/discover')}>
           <span className="brand-mark" aria-hidden><i /><i /><i /></span>
@@ -36,7 +38,7 @@ export default function Shell({ children }: { children: ReactNode }) {
           <div className="rail-projects">
             <p className="rail-heading">Recent projects</p>
             {projects.slice(0, 5).map(p => (
-              <a key={p.id} href={`#/projects/${p.id}`} aria-current={parts[1] === p.id ? 'page' : undefined}>{p.title}</a>
+              <a key={p.id} href={`#/projects/${p.id}`} aria-current={parts[1] === p.id ? 'page' : undefined}><span className="rp-dot"><Icon name="video" size={14} /></span><span>{p.title}</span></a>
             ))}
           </div>
         )}
